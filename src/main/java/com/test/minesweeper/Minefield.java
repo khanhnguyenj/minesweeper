@@ -40,7 +40,7 @@ public final class Minefield {
   /**
    * Display the minefield.
    */
-  public void generateDisplayGrid() {
+  private void generateDisplayGrid() {
     for (int i = 0; i < gridSize; i++) {
       for (int j = 0; j < gridSize; j++) {
         displayGrid[i][j] = '_';
@@ -51,7 +51,7 @@ public final class Minefield {
   /**
    * Update minefield after generating the random mines.
    */
-  public void updateMinefieldAfterGeneratingRandomMines() {
+  private void updateMinefieldAfterGeneratingRandomMines() {
     for (int i = 0; i < gridSize; i++) {
       for (int j = 0; j < gridSize; j++) {
         int value = grid[i][j];
@@ -99,7 +99,7 @@ public final class Minefield {
   /**
    * Generate random mines.
    */
-  public void generateRandomMines() {
+  private void generateRandomMines() {
     Random random = new Random();
 
     for (int i = 0; i < numberOfMines; i++) {
@@ -268,23 +268,5 @@ public final class Minefield {
     }
 
     return remainingMines;
-  }
-
-  /**
-   * Grid contains the actual value of the minefield.
-   *
-   * @return Array of actual value of the minefield.
-   */
-  public int[][] getGrid() {
-    return grid;
-  }
-
-  /**
-   * Grid will be used to display the minefield to a user.
-   *
-   * @return Array of value will be displayed to a user.
-   */
-  public char[][] getDisplayGrid() {
-    return displayGrid;
   }
 }

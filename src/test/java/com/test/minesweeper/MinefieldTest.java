@@ -2,6 +2,9 @@ package com.test.minesweeper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import org.junit.jupiter.api.Test;
 
 public class MinefieldTest {
@@ -9,28 +12,40 @@ public class MinefieldTest {
   private Minefield minefield;
 
   @Test
-  public void testGrid() {
+  public void testGrid() throws NoSuchFieldException, IllegalAccessException {
     int gridSize = 4;
     int numberOfMines = 2;
     minefield = new Minefield(gridSize, numberOfMines);
     minefield.displayMinefield();
 
-    assertEquals(gridSize, minefield.getGrid().length);
+    Field field = minefield.getClass().getDeclaredField("grid");
+    field.setAccessible(true);
+    int[][] grid = (int[][]) field.get(minefield);
+
+    assertEquals(gridSize, grid.length);
   }
 
   @Test
-  public void testGenerateRandomMines() {
+  public void testGenerateRandomMines()
+      throws IllegalAccessException, NoSuchFieldException, NoSuchMethodException, InvocationTargetException {
     int gridSize = 4;
     int numberOfMines = 2;
     minefield = new Minefield(gridSize, numberOfMines);
-    minefield.generateRandomMines();
+
+    Method method = minefield.getClass().getDeclaredMethod("generateRandomMines");
+    method.setAccessible(true);
+    method.invoke(minefield, null);
 
     minefield.displayMinefield();
+
+    Field field = minefield.getClass().getDeclaredField("grid");
+    field.setAccessible(true);
+    int[][] grid = (int[][]) field.get(minefield);
 
     int countMines = 0;
     for (int i = 0; i < gridSize; i++) {
       for (int j = 0; j < gridSize; j++) {
-        if (minefield.getGrid()[i][j] == -1) {
+        if (grid[i][j] == -1) {
           countMines++;
         }
       }
@@ -40,129 +55,185 @@ public class MinefieldTest {
   }
 
   @Test
-  public void testUpdateMinefieldAfterGeneratingRandomMines1() {
+  public void testUpdateMinefieldAfterGeneratingRandomMines1()
+      throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
     int gridSize = 4;
     int numberOfMines = 2;
     minefield = new Minefield(gridSize, numberOfMines);
-    minefield.getGrid()[0][3] = -1;
-    minefield.getGrid()[3][0] = -1;
+
+    Field field = minefield.getClass().getDeclaredField("grid");
+    field.setAccessible(true);
+    int[][] grid = (int[][]) field.get(minefield);
+
+    grid[0][3] = -1;
+    grid[3][0] = -1;
 
     minefield.displayMinefield();
-    minefield.updateMinefieldAfterGeneratingRandomMines();
+
+    Method method = minefield.getClass()
+        .getDeclaredMethod("updateMinefieldAfterGeneratingRandomMines");
+    method.setAccessible(true);
+    method.invoke(minefield, null);
+
     minefield.displayMinefield();
 
-    assertEquals(minefield.getGrid()[1][2], 1);
-    assertEquals(1, minefield.getGrid()[1][3]);
-    assertEquals(minefield.getGrid()[2][0], 1);
-    assertEquals(minefield.getGrid()[2][1], 1);
-    assertEquals(minefield.getGrid()[3][1], 1);
+    assertEquals(1, grid[1][2]);
+    assertEquals(1, grid[1][3]);
+    assertEquals(1, grid[2][0]);
+    assertEquals(1, grid[2][1]);
+    assertEquals(1, grid[3][1]);
   }
 
   @Test
-  public void testUpdateMinefieldAfterGeneratingRandomMines2() {
+  public void testUpdateMinefieldAfterGeneratingRandomMines2()
+      throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
     int gridSize = 4;
     int numberOfMines = 2;
     minefield = new Minefield(gridSize, numberOfMines);
-    minefield.getGrid()[1][1] = -1;
-    minefield.getGrid()[3][0] = -1;
+
+    Field field = minefield.getClass().getDeclaredField("grid");
+    field.setAccessible(true);
+    int[][] grid = (int[][]) field.get(minefield);
+
+    grid[1][1] = -1;
+    grid[3][0] = -1;
 
     minefield.displayMinefield();
-    minefield.updateMinefieldAfterGeneratingRandomMines();
+
+    Method method = minefield.getClass()
+        .getDeclaredMethod("updateMinefieldAfterGeneratingRandomMines");
+    method.setAccessible(true);
+    method.invoke(minefield, null);
+
     minefield.displayMinefield();
 
-    assertEquals(1, minefield.getGrid()[0][0]);
-    assertEquals(1, minefield.getGrid()[0][1]);
-    assertEquals(1, minefield.getGrid()[0][2]);
-    assertEquals(1, minefield.getGrid()[1][0]);
-    assertEquals(1, minefield.getGrid()[1][2]);
-    assertEquals(2, minefield.getGrid()[2][0]);
-    assertEquals(2, minefield.getGrid()[2][1]);
-    assertEquals(1, minefield.getGrid()[2][2]);
-    assertEquals(1, minefield.getGrid()[3][1]);
+    assertEquals(1, grid[0][0]);
+    assertEquals(1, grid[0][1]);
+    assertEquals(1, grid[0][2]);
+    assertEquals(1, grid[1][0]);
+    assertEquals(1, grid[1][2]);
+    assertEquals(2, grid[2][0]);
+    assertEquals(2, grid[2][1]);
+    assertEquals(1, grid[2][2]);
+    assertEquals(1, grid[3][1]);
   }
 
   @Test
-  public void testUpdateMinefieldAfterGeneratingRandomMines3() {
+  public void testUpdateMinefieldAfterGeneratingRandomMines3()
+      throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
     int gridSize = 4;
     int numberOfMines = 3;
     minefield = new Minefield(gridSize, numberOfMines);
-    minefield.getGrid()[0][3] = -1;
-    minefield.getGrid()[1][1] = -1;
-    minefield.getGrid()[2][1] = -1;
+    Field field = minefield.getClass().getDeclaredField("grid");
+    field.setAccessible(true);
+    int[][] grid = (int[][]) field.get(minefield);
+
+    grid[0][3] = -1;
+    grid[1][1] = -1;
+    grid[2][1] = -1;
 
     minefield.displayMinefield();
-    minefield.updateMinefieldAfterGeneratingRandomMines();
+
+    Method method = minefield.getClass()
+        .getDeclaredMethod("updateMinefieldAfterGeneratingRandomMines");
+    method.setAccessible(true);
+    method.invoke(minefield, null);
+
     minefield.displayMinefield();
 
-    assertEquals(1, minefield.getGrid()[0][0]);
-    assertEquals(1, minefield.getGrid()[0][1]);
-    assertEquals(2, minefield.getGrid()[0][2]);
-    assertEquals(2, minefield.getGrid()[1][0]);
-    assertEquals(3, minefield.getGrid()[1][2]);
-    assertEquals(1, minefield.getGrid()[1][3]);
-    assertEquals(2, minefield.getGrid()[2][0]);
-    assertEquals(2, minefield.getGrid()[2][2]);
-    assertEquals(1, minefield.getGrid()[3][0]);
-    assertEquals(1, minefield.getGrid()[3][1]);
-    assertEquals(1, minefield.getGrid()[3][2]);
+    assertEquals(1, grid[0][0]);
+    assertEquals(1, grid[0][1]);
+    assertEquals(2, grid[0][2]);
+    assertEquals(2, grid[1][0]);
+    assertEquals(3, grid[1][2]);
+    assertEquals(1, grid[1][3]);
+    assertEquals(2, grid[2][0]);
+    assertEquals(2, grid[2][2]);
+    assertEquals(1, grid[3][0]);
+    assertEquals(1, grid[3][1]);
+    assertEquals(1, grid[3][2]);
   }
 
   @Test
-  public void testUpdateMinefieldAfterGeneratingRandomMines4() {
-    int gridSize = 5;
-    int numberOfMines = 3;
-    minefield = new Minefield(gridSize, numberOfMines);
-    minefield.getGrid()[1][0] = -1;
-    minefield.getGrid()[2][0] = -1;
-    minefield.getGrid()[2][1] = -1;
-
-    minefield.displayMinefield();
-    minefield.updateMinefieldAfterGeneratingRandomMines();
-    minefield.displayMinefield();
-
-    assertEquals(1, minefield.getGrid()[0][0]);
-    assertEquals(1, minefield.getGrid()[0][1]);
-    assertEquals(3, minefield.getGrid()[1][1]);
-    assertEquals(1, minefield.getGrid()[1][2]);
-    assertEquals(1, minefield.getGrid()[2][2]);
-    assertEquals(2, minefield.getGrid()[3][0]);
-    assertEquals(2, minefield.getGrid()[3][1]);
-    assertEquals(1, minefield.getGrid()[3][2]);
-  }
-
-  @Test
-  public void testGenerateDisplayGrid() {
+  public void testUpdateMinefieldAfterGeneratingRandomMines4()
+      throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
     int gridSize = 5;
     int numberOfMines = 3;
     minefield = new Minefield(gridSize, numberOfMines);
 
-    minefield.generateDisplayGrid();
+    Field field = minefield.getClass().getDeclaredField("grid");
+    field.setAccessible(true);
+    int[][] grid = (int[][]) field.get(minefield);
+
+    grid[1][0] = -1;
+    grid[2][0] = -1;
+    grid[2][1] = -1;
+
+    minefield.displayMinefield();
+
+    Method method = minefield.getClass()
+        .getDeclaredMethod("updateMinefieldAfterGeneratingRandomMines");
+    method.setAccessible(true);
+    method.invoke(minefield, null);
+
+    minefield.displayMinefield();
+
+    assertEquals(1, grid[0][0]);
+    assertEquals(1, grid[0][1]);
+    assertEquals(3, grid[1][1]);
+    assertEquals(1, grid[1][2]);
+    assertEquals(1, grid[2][2]);
+    assertEquals(2, grid[3][0]);
+    assertEquals(2, grid[3][1]);
+    assertEquals(1, grid[3][2]);
+  }
+
+  @Test
+  public void testGenerateDisplayGrid()
+      throws IllegalAccessException, NoSuchFieldException, NoSuchMethodException, InvocationTargetException {
+    int gridSize = 5;
+    int numberOfMines = 3;
+    minefield = new Minefield(gridSize, numberOfMines);
+
+    Method method = minefield.getClass().getDeclaredMethod("generateDisplayGrid");
+    method.setAccessible(true);
+    method.invoke(minefield, null);
+
+    Field field = minefield.getClass().getDeclaredField("displayGrid");
+    field.setAccessible(true);
+    char[][] displayGrid = (char[][]) field.get(minefield);
 
     for (int i = 0; i < gridSize; i++) {
       for (int j = 0; j < gridSize; j++) {
-        assertEquals('_', minefield.getDisplayGrid()[i][j]);
+        assertEquals('_', displayGrid[i][j]);
       }
     }
   }
 
   @Test
-  public void testInitialize() {
+  public void testInitialize() throws NoSuchFieldException, IllegalAccessException {
     int gridSize = 5;
     int numberOfMines = 3;
     minefield = new Minefield(gridSize, numberOfMines);
 
     minefield.initialize();
 
+    Field field = minefield.getClass().getDeclaredField("displayGrid");
+    field.setAccessible(true);
+    char[][] displayGrid = (char[][]) field.get(minefield);
     for (int i = 0; i < gridSize; i++) {
       for (int j = 0; j < gridSize; j++) {
-        assertEquals('_', minefield.getDisplayGrid()[i][j]);
+        assertEquals('_', displayGrid[i][j]);
       }
     }
 
+    Field field1 = minefield.getClass().getDeclaredField("grid");
+    field1.setAccessible(true);
+    int[][] grid = (int[][]) field1.get(minefield);
     int countMines = 0;
     for (int i = 0; i < gridSize; i++) {
       for (int j = 0; j < gridSize; j++) {
-        if (minefield.getGrid()[i][j] == -1) {
+        if (grid[i][j] == -1) {
           countMines++;
         }
       }
@@ -172,16 +243,28 @@ public class MinefieldTest {
   }
 
   @Test
-  public void testProcessSelectedSquare() {
+  public void testProcessSelectedSquare()
+      throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
     int gridSize = 5;
     int numberOfMines = 3;
     minefield = new Minefield(gridSize, numberOfMines);
-    minefield.getGrid()[1][0] = -1;
-    minefield.getGrid()[2][0] = -1;
-    minefield.getGrid()[2][1] = -1;
 
-    minefield.updateMinefieldAfterGeneratingRandomMines();
-    minefield.generateDisplayGrid();
+    Field field = minefield.getClass().getDeclaredField("grid");
+    field.setAccessible(true);
+    int[][] grid = (int[][]) field.get(minefield);
+
+    grid[1][0] = -1;
+    grid[2][0] = -1;
+    grid[2][1] = -1;
+
+    Method method = minefield.getClass()
+        .getDeclaredMethod("updateMinefieldAfterGeneratingRandomMines");
+    method.setAccessible(true);
+    method.invoke(minefield, null);
+
+    Method method2 = minefield.getClass().getDeclaredMethod("generateDisplayGrid");
+    method2.setAccessible(true);
+    method2.invoke(minefield, null);
 
     minefield.displayMinefield();
     int n = minefield.processSelectedSquare(new Square(2, 3));
@@ -191,17 +274,28 @@ public class MinefieldTest {
   }
 
   @Test
-  public void testProcessSelectedSquare1() {
+  public void testProcessSelectedSquare1()
+      throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
     int gridSize = 4;
     int numberOfMines = 3;
     minefield = new Minefield(gridSize, numberOfMines);
-    minefield.getGrid()[0][1] = -1;
-    minefield.getGrid()[1][1] = -1;
-    minefield.getGrid()[2][0] = -1;
 
-    minefield.updateMinefieldAfterGeneratingRandomMines();
+    Field field = minefield.getClass().getDeclaredField("grid");
+    field.setAccessible(true);
+    int[][] grid = (int[][]) field.get(minefield);
 
-    minefield.generateDisplayGrid();
+    grid[0][1] = -1;
+    grid[1][1] = -1;
+    grid[2][0] = -1;
+
+    Method method = minefield.getClass()
+        .getDeclaredMethod("updateMinefieldAfterGeneratingRandomMines");
+    method.setAccessible(true);
+    method.invoke(minefield, null);
+
+    Method method2 = minefield.getClass().getDeclaredMethod("generateDisplayGrid");
+    method2.setAccessible(true);
+    method2.invoke(minefield, null);
 
     minefield.displayMinefield();
     int n = minefield.processSelectedSquare(new Square(1, 0));
@@ -211,16 +305,28 @@ public class MinefieldTest {
   }
 
   @Test
-  public void testProcessSelectedSquare2() {
+  public void testProcessSelectedSquare2()
+      throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
     int gridSize = 4;
     int numberOfMines = 3;
     minefield = new Minefield(gridSize, numberOfMines);
-    minefield.getGrid()[0][1] = -1;
-    minefield.getGrid()[1][1] = -1;
-    minefield.getGrid()[2][0] = -1;
 
-    minefield.updateMinefieldAfterGeneratingRandomMines();
-    minefield.generateDisplayGrid();
+    Field field = minefield.getClass().getDeclaredField("grid");
+    field.setAccessible(true);
+    int[][] grid = (int[][]) field.get(minefield);
+
+    grid[0][1] = -1;
+    grid[1][1] = -1;
+    grid[2][0] = -1;
+
+    Method method = minefield.getClass()
+        .getDeclaredMethod("updateMinefieldAfterGeneratingRandomMines");
+    method.setAccessible(true);
+    method.invoke(minefield, null);
+
+    Method method2 = minefield.getClass().getDeclaredMethod("generateDisplayGrid");
+    method2.setAccessible(true);
+    method2.invoke(minefield, null);
 
     minefield.displayMinefield();
     int n = minefield.processSelectedSquare(new Square(3, 3));
@@ -228,30 +334,46 @@ public class MinefieldTest {
 
     assertEquals(0, n);
 
-    assertEquals('0', minefield.getDisplayGrid()[0][3]);
-    assertEquals('0', minefield.getDisplayGrid()[1][3]);
-    assertEquals('0', minefield.getDisplayGrid()[2][3]);
-    assertEquals('0', minefield.getDisplayGrid()[3][3]);
-    assertEquals('0', minefield.getDisplayGrid()[3][2]);
+    Field field1 = minefield.getClass().getDeclaredField("displayGrid");
+    field1.setAccessible(true);
+    char[][] displayGrid = (char[][]) field1.get(minefield);
 
-    assertEquals('2', minefield.getDisplayGrid()[0][2]);
-    assertEquals('2', minefield.getDisplayGrid()[1][2]);
-    assertEquals('1', minefield.getDisplayGrid()[2][2]);
-    assertEquals('2', minefield.getDisplayGrid()[2][1]);
-    assertEquals('1', minefield.getDisplayGrid()[3][1]);
+    assertEquals('0', displayGrid[0][3]);
+    assertEquals('0', displayGrid[1][3]);
+    assertEquals('0', displayGrid[2][3]);
+    assertEquals('0', displayGrid[3][3]);
+    assertEquals('0', displayGrid[3][2]);
+
+    assertEquals('2', displayGrid[0][2]);
+    assertEquals('2', displayGrid[1][2]);
+    assertEquals('1', displayGrid[2][2]);
+    assertEquals('2', displayGrid[2][1]);
+    assertEquals('1', displayGrid[3][1]);
   }
 
   @Test
-  public void testProcessSelectedSquare3() {
+  public void testProcessSelectedSquare3()
+      throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
     int gridSize = 4;
     int numberOfMines = 3;
     minefield = new Minefield(gridSize, numberOfMines);
-    minefield.getGrid()[0][1] = -1;
-    minefield.getGrid()[1][1] = -1;
-    minefield.getGrid()[2][0] = -1;
 
-    minefield.updateMinefieldAfterGeneratingRandomMines();
-    minefield.generateDisplayGrid();
+    Field field = minefield.getClass().getDeclaredField("grid");
+    field.setAccessible(true);
+    int[][] grid = (int[][]) field.get(minefield);
+
+    grid[0][1] = -1;
+    grid[1][1] = -1;
+    grid[2][0] = -1;
+
+    Method method = minefield.getClass()
+        .getDeclaredMethod("updateMinefieldAfterGeneratingRandomMines");
+    method.setAccessible(true);
+    method.invoke(minefield, null);
+
+    Method method2 = minefield.getClass().getDeclaredMethod("generateDisplayGrid");
+    method2.setAccessible(true);
+    method2.invoke(minefield, null);
 
     minefield.displayMinefield();
     int n = minefield.processSelectedSquare(new Square(0, 0));
@@ -261,16 +383,28 @@ public class MinefieldTest {
   }
 
   @Test
-  public void testProcessSelectedSquare4() {
+  public void testProcessSelectedSquare4()
+      throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, NoSuchFieldException {
     int gridSize = 4;
     int numberOfMines = 3;
     minefield = new Minefield(gridSize, numberOfMines);
-    minefield.getGrid()[0][1] = -1;
-    minefield.getGrid()[1][1] = -1;
-    minefield.getGrid()[2][0] = -1;
 
-    minefield.updateMinefieldAfterGeneratingRandomMines();
-    minefield.generateDisplayGrid();
+    Field field = minefield.getClass().getDeclaredField("grid");
+    field.setAccessible(true);
+    int[][] grid = (int[][]) field.get(minefield);
+
+    grid[0][1] = -1;
+    grid[1][1] = -1;
+    grid[2][0] = -1;
+
+    Method method = minefield.getClass()
+        .getDeclaredMethod("updateMinefieldAfterGeneratingRandomMines");
+    method.setAccessible(true);
+    method.invoke(minefield, null);
+
+    Method method2 = minefield.getClass().getDeclaredMethod("generateDisplayGrid");
+    method2.setAccessible(true);
+    method2.invoke(minefield, null);
 
     minefield.displayMinefield();
     int n = minefield.processSelectedSquare(new Square(3, 0));
@@ -280,16 +414,28 @@ public class MinefieldTest {
   }
 
   @Test
-  public void testCountRemainingMines() {
+  public void testCountRemainingMines()
+      throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
     int gridSize = 4;
     int numberOfMines = 3;
     minefield = new Minefield(gridSize, numberOfMines);
-    minefield.getGrid()[0][1] = -1;
-    minefield.getGrid()[1][1] = -1;
-    minefield.getGrid()[2][0] = -1;
 
-    minefield.updateMinefieldAfterGeneratingRandomMines();
-    minefield.generateDisplayGrid();
+    Field field = minefield.getClass().getDeclaredField("grid");
+    field.setAccessible(true);
+    int[][] grid = (int[][]) field.get(minefield);
+
+    grid[0][1] = -1;
+    grid[1][1] = -1;
+    grid[2][0] = -1;
+
+    Method method = minefield.getClass()
+        .getDeclaredMethod("updateMinefieldAfterGeneratingRandomMines");
+    method.setAccessible(true);
+    method.invoke(minefield, null);
+
+    Method method2 = minefield.getClass().getDeclaredMethod("generateDisplayGrid");
+    method2.setAccessible(true);
+    method2.invoke(minefield, null);
 
     minefield.displayMinefield();
     minefield.processSelectedSquare(new Square(0, 0));
