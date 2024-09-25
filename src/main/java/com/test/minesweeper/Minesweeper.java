@@ -82,7 +82,7 @@ public final class Minesweeper {
             .findFirst()
             .orElse(-1);
 
-    int y = Integer.parseInt(square.substring(1, 2));
+    int y = Integer.parseInt(square.substring(1));
 
     return new Square(x, y - 1);
   }

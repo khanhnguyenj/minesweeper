@@ -28,4 +28,14 @@ public class MinesweeperTest {
     assertEquals(4, square.yPos());
   }
 
+  @Test
+  public void testGetSelectedSquare2() {
+    minesweeper = new Minesweeper();
+
+    Square square = minesweeper.getSelectedSquare("B10");
+
+    assertEquals(1, square.xPos());
+    assertEquals(9, square.yPos());
+  }
+
 }
